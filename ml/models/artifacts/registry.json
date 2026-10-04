@@ -1,0 +1,35 @@
+{
+  "active": "bot-detector-v1",
+  "versions": [
+    {
+      "version": "bot-detector-v1",
+      "trained_at": "2026-10-04T23:29:43.591146+00:00",
+      "model_type": "random_forest",
+      "dataset": {
+        "source": "synthetic",
+        "n_accounts": 1500,
+        "seed": 42,
+        "hash": "b2d2b7c33298",
+        "n_scored_accounts": 1500,
+        "bot_rate": 0.3333333333333333,
+        "split": {
+          "train": 900,
+          "val": 300,
+          "test": 300,
+          "level": "account"
+        }
+      },
+      "metrics": {
+        "pr_auc": 0.9811663676919866,
+        "roc_auc": 0.9793749999999999,
+        "f1": 0.9702970297029703,
+        "precision": 0.9607843137254902,
+        "recall": 0.98,
+        "brier": 0.019360192997354475,
+        "accuracy": 0.98
+      },
+      "n_features": 57,
+      "sha256": "ace3ed20334dab9a2975172654f6bd7f436b6a18c8f0b774324ea09fd344e3e6"
+    }
+  ]
+}

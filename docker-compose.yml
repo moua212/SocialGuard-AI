@@ -1,0 +1,33 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: socialguard
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-socialguard}
+      POSTGRES_DB: socialguard
+    volumes: [pgdata:/var/lib/postgresql/data]
+    healthcheck: { test: ["CMD-SHELL", "pg_isready -U socialguard"], interval: 5s, retries: 10 }
+
+  mlflow:
+    image: ghcr.io/mlflow/mlflow:latest
+    command: mlflow server --host 0.0.0.0 --port 5000 --backend-store-uri sqlite:///mlflow/mlflow.db --default-artifact-root /mlflow/artifacts
+    volumes: [mlflowdata:/mlflow]
+    ports: ["5000:5000"]
+
+  backend:
+    build: { context: ., dockerfile: backend/Dockerfile }
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg2://socialguard:${POSTGRES_PASSWORD:-socialguard}@postgres:5432/socialguard
+      MLFLOW_TRACKING_URI: http://mlflow:5000
+      APP_ENV: ${APP_ENV:-development}
+    depends_on: { postgres: { condition: service_healthy } }
+    ports: ["8000:8000"]
+    volumes: [models:/app/ml/models/artifacts]
+
+  frontend:
+    build: ./frontend
+    depends_on: [backend]
+    ports: ["3000:80"]
+
+volumes: { pgdata: {}, mlflowdata: {}, models: {} }
